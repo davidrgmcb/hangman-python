@@ -1,4 +1,3 @@
-#import sys
 import random
 
 class Word(object): #Aspects of the word itself
@@ -34,15 +33,15 @@ while (game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGue
     
     game.lettersGuessed.add(game.guess)
     
-    if set(game.guess).issubset(answer.correctLetters):
+    if set(game.guess).issubset(answer.correctLetters): #ugly and cludgy to convert a one letter string into a set just for this, hopefully change later
         pass
     else:
-        game.strikes += 1
+        game.strikes += 1 #need penalty to be an else, probably should find a better way to put it than pass up there
         
-    print(game.strikes)
+    print(game.strikes) #Perhaps one day this morphs into an instruction to draw a hangman bit by bit and helsp balloon the size of the program
+    
+    print(game.lettersGuessed)
 
 print(game.guess)
 
 print(answer.word)
-
-print(game.lettersGuessed)
