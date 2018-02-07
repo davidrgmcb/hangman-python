@@ -12,5 +12,8 @@ class testInputExistence (unittest.TestCase):
     def testWordRandomizer(self):
         self.assertNotEqual(hangman.answer.word, 'unpopulated')
         
+    def testGuessListAppend(self):
+        self.assertTrue(len(hangman.game.lettersGuessed) > 1)
+        
 if __name__ == '__main__':
     unittest.main()
