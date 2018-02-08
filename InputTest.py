@@ -15,5 +15,17 @@ class testInputExistence (unittest.TestCase):
     def testGuessListAppend(self):
         self.assertTrue(len(hangman.game.lettersGuessed) > 1)
         
+    def testCaseFixingOnWords(self):
+        self.assertTrue(str.islower(hangman.answer.word))
+    
+    def testCaseFixingOnGuess(self):
+        self.assertTrue(str.islower(hangman.game.guess))
+        
+    def testGuessIsLetter(self):
+        self.assertTrue(str.isalpha(hangman.game.guess))
+        
+    def testNoApostrophe(self):
+        self.assertFalse(("\'" in hangman.answer.word))
+        
 if __name__ == '__main__':
     unittest.main()
