@@ -1,4 +1,5 @@
 import random
+from sys import version_info
 
 class Word(object): #Aspects of the word itself
     def __init__(self):
@@ -21,25 +22,28 @@ answer = Word() #can't play hangman with no word to guess
 
 answer.word = random.choice(possibleWords) #would get pretty boring if you couldn't have multiple words, method of randomly getting words subject to change
 
-while "\'" in answer.word:
-    answer.word = random.choice(possibleWords) #some of these word sources have apostrophes, best to reroll if those show up
+while answer.word.isalpha() == False:
+    answer.word = random.choice(possibleWords) #some of these word sources have apostrophes or nonletters in general, best to reroll if those show up
 
 answer.word = str.lower(answer.word) #makes sure the word stays standardized to lower case regardless of source
 
 for i in answer.word:
-    answer.correctLetters.add(i)#makes a set of every letter int he word for easy comparison
+    answer.correctLetters.add(i)#makes a set of every letter in the word for easy comparison
 
 while (game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGuessed)): #game loop executes until enough wrong guesses or all correct letters guessed
 
-    game.guess = str.lower(input("Enter one letter\n")) #takes guess, ensures it isn't cased weird
+    if (version_info > (3, 0)): #A python version test, the changes to input bring the program to its knees otherwise
+        game.guess = str.lower(input("Enter one letter\n")) #takes guess, ensures it isn't cased weird
+    else:
+        game.guess = str.lower(raw_input("Enter one letter\n")) #Ideally makes it somewhat python 2 compatible, merits careful testing
 
-    while len(game.guess) > 1:
-        print ("Please, just one letter\n")
-        game.guess = str.lower(input("Enter one letter\n"))
-        
-    while game.guess.isalpha() == False:
-        print("Letters only please\n")
-        game.guess = str.lower(input("Enter one letter\n")) #lot of essentially repeat lines here, hope to fix that but who knows if it'd just make it harder to read
+    while (len(game.guess) > 1) or (game.guess.isalpha() == False):
+        if (version_info > (3, 0)): #same version compatibility attempt
+            print ("Please, just one letter and no numbers\n")
+            game.guess = str.lower(input("Enter one letter\n"))
+        else:
+            print ("Please, just one letter and no numbers\n")
+            game.guess = str.lower(raw_input("Enter one letter\n"))
     
     game.lettersGuessed.add(game.guess) #track what letters have been guessed, naturaly
     
@@ -55,3 +59,5 @@ while (game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGue
 print(game.guess)
 
 print(answer.word)
+
+#Work on display, of letters in word correctly guessed, of hangman. Aesthetics time.
