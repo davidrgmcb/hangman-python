@@ -9,9 +9,11 @@ class testInputExistence (unittest.TestCase):
     def testInputLength(self):
         self.assertTrue(len(hangman.game.guess) < 2)
         
+class testRandomizer (unittest.TestCase):
     def testWordRandomizer(self):
         self.assertNotEqual(hangman.answer.word, 'unpopulated')
-        
+    
+class testStandardization (unittest.TestCase):    
     def testGuessListAppend(self):
         self.assertTrue(len(hangman.game.lettersGuessed) > 1)
         
@@ -26,6 +28,12 @@ class testInputExistence (unittest.TestCase):
         
     def testNoApostrophe(self):
         self.assertFalse(("\'" in hangman.answer.word))
+
+@unittest.skip #know what I want this to do but it probably doesn't do it so skipping for now while I try to fix the actual problem
+class testWordUIRelatedFunctions (unittest.TestCase):
+    def testDisplayCorrectGuesses(self):
+        for letters in hangman.answer.correctList:
+            self.assertTrue((letters in hangman.game.wordProgress == letters in hangman.answer.correctList) or (letters in hangman.game.wordProgress == "_"))
         
 if __name__ == '__main__':
     unittest.main()
