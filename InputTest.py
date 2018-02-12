@@ -29,11 +29,11 @@ class testStandardization (unittest.TestCase):
     def testNoApostrophe(self):
         self.assertFalse(("\'" in hangman.answer.word))
 
-@unittest.skip #know what I want this to do but it probably doesn't do it so skipping for now while I try to fix the actual problem
+#@unittest.skip #know what I want this to do but it probably doesn't do it so skipping for now while I try to fix the actual problem
 class testWordUIRelatedFunctions (unittest.TestCase):
     def testDisplayCorrectGuesses(self):
-        for letters in hangman.answer.correctList:
-            self.assertTrue((letters in hangman.game.wordProgress == letters in hangman.answer.correctList) or (letters in hangman.game.wordProgress == "_"))
+        for letters in range(0, len(hangman.answer.listOfCorrectLetters)):
+            self.assertTrue((hangman.game.wordProgress[letters] == hangman.answer.listOfCorrectLetters[letters]) or (hangman.game.wordProgress[letters] == '_'))
         
 if __name__ == '__main__':
     unittest.main()

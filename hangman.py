@@ -6,10 +6,10 @@ class Word(object): #Aspects of the word itself
         self.word = "-1" #Makes the default run afoul of the "isalpha()" call, saves a line
         self.length = len(self.word) #commented out in case of use when reimplementing for more complex but aesthetically pleasing solution.
         self.correctLetters = set()
-        self.correctList = list(self.word)
+        self.listOfCorrectLetters = list(self.word)
         
     def fixAnswer(self):
-        self.correctList = list(self.word)
+        self.listOfCorrectLetters = list(self.word)
         self.length = len(self.word)
         return
 
@@ -35,7 +35,6 @@ answer.word = str.lower(answer.word) #makes sure the word stays standardized to 
 
 for letters in range(answer.length): #expand list into row of underscores showing how many letters remain to be guessed
     game.wordProgress.append("_")
-    print (game.wordProgress)
 
 for letter in answer.word:
     answer.correctLetters.add(letter)#makes a set of every letter in the word for easy comparison
@@ -55,10 +54,9 @@ while (game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGue
             print ("Please, just one letter and no numbers\n")
             game.guess = str.lower(raw_input("Enter one letter\n"))
             
-    for letter in answer.correctList:
-        if answer.correctList == game.guess:
+    for letter in range(0, len(answer.listOfCorrectLetters)):
+        if answer.listOfCorrectLetters[letter] == game.guess:
             game.wordProgress[letter] = game.guess
-            print(game.wordProgress)
         
     
     game.lettersGuessed.add(game.guess) #track what letters have been guessed, naturaly
@@ -70,11 +68,11 @@ while (game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGue
         
     print(game.strikes) #Perhaps one day this morphs into an instruction to draw a hangman bit by bit and helps balloon the size of the program
     
-    print(answer.correctLetters) #easier to debug with a view of what's correct
+    #print(answer.correctLetters) #easier to debug with a view of what's correct
     
     print(' '.join(game.wordProgress)) #clean way of showing that
     
-    #print(answer.correctList)
+    print("\n")
     
     print(game.lettersGuessed) #frustrating to not know what you've guessed, should try to make this alphabetical later
 
