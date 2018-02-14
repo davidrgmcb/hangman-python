@@ -2,7 +2,6 @@ import hangman
 import unittest
 
 class testInputExistence (unittest.TestCase):
-    
     def testUserInput(self):
         self.assertNotEqual(hangman.game.guess, '?')
     
@@ -34,6 +33,10 @@ class testWordUIRelatedFunctions (unittest.TestCase):
     def testDisplayCorrectGuesses(self):
         for letters in range(0, len(hangman.answer.listOfCorrectLetters)):
             self.assertTrue((hangman.game.wordProgress[letters] == hangman.answer.listOfCorrectLetters[letters]) or (hangman.game.wordProgress[letters] == '_'))
+            
+class testDifficultySettings (unittest.TestCase):
+    def testDifficultySelect(self):
+        self.assertTrue((int(hangman.game.difficulty) > 0) and (int(hangman.game.difficulty) < 4) and (len(hangman.game.difficulty) == 1))
         
 if __name__ == '__main__':
     unittest.main()

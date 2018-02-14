@@ -1,24 +1,6 @@
 from random import choice
 from sys import version_info
-
-class Word(object): #Aspects of the word itself
-    def __init__(self):
-        self.word = "-1" #Makes the default run afoul of the "isalpha()" call, saves a line
-        self.length = len(self.word) #commented out in case of use when reimplementing for more complex but aesthetically pleasing solution.
-        self.correctLetters = set()
-        self.listOfCorrectLetters = list(self.word)
-        
-    def fixAnswer(self):
-        self.listOfCorrectLetters = list(self.word)
-        self.length = len(self.word)
-        return
-
-class GameState(object): #Aspects of the game state and how it interacts with the player
-    def __init__(self):
-        self.guess = "?"
-        self.strikes = 0
-        self.lettersGuessed = set()
-        self.wordProgress = []
+from hangmanClasses import Word, GameState
         
 possibleWords = open("/usr/share/dict/words").read().split() #word randomization schemes,this one along with limited UI makes this mindnumbingly hard, maybe make this a hard mode and find an easier list
 
@@ -26,7 +8,19 @@ answer = Word() #can't play hangman with no word to guess
 
 game = GameState() #Necessary to immediately generate the actual gamestate
 
-while answer.word.isalpha() == False: #randomizes the word so long as it hasn't already been set
+if (version_info > (3, 0)):
+    game.difficulty = input("Choose your difficulty by typing 1 (Normal), 2 (Challenging), or 3 (Unfair)\n")
+else:
+    game.difficulty = raw_input("Choose your difficulty by typing 1 (Normal), 2 (Challenging), or 3 (Unfair)\n")
+    
+if (game.difficulty.isdigit()) and (int(game.difficulty) > 0) and (int(game.difficulty) < 4) and (len(game.difficulty) == 1):
+    print(game.difficulty)
+else:
+    print("If you want to be difficult, I'll be difficult")
+    game.difficulty = "3"
+    print(game.difficulty)
+
+while answer.word.isalpha() == False or answer.length < 2: #randomizes the word so long as it hasn't already been set
     answer.word = choice(possibleWords) #some of these word sources have apostrophes or nonletters in general, best to reroll if those show up
 
 answer.fixAnswer()#probably a better way to do this but answer needs to be changed from its default values and have anything dependant on those "fixed", probably replace with something less stupid later
@@ -66,11 +60,27 @@ while (game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGue
     else:
         game.strikes += 1 #need penalty to be an else, probably should find a better way to put it than pass up there
         
-    print(game.strikes) #Perhaps one day this morphs into an instruction to draw a hangman bit by bit and helps balloon the size of the program
+    print(game.strikes) #Perhaps one day this morphs into an instruction to draw a hangman bit by bit and helps balloon the size of the program update: the future is now
+    if game.strikes == 1:
+        print("________\n|       |\n|       O")
+    elif game.strikes == 2:
+        print("________\n|       |\n|       O\n|       |")
+    elif game.strikes == 3:
+        print("________\n|       |\n|       O\n|     --|")
+    elif game.strikes == 4:
+        print("________\n|       |\n|       O\n|     --|--")
+    elif game.strikes == 5:
+        print("________\n|       |\n|       O\n|     --|--\n|      /")
+    elif game.strikes == 6:
+        print("________\n|       |\n|       O\n|     --|--\n|      / \\")
+    elif game.strikes == 7:
+        print("________\n|       |\n|       O\n|     --|--\n|      / \\ \n\n He's dead Jim")
+    #crude hangman drawing, probably better solutions exist but whatever
     
     #print(answer.correctLetters) #easier to debug with a view of what's correct
     
-    print(' '.join(game.wordProgress)) #clean way of showing that
+    if int(game.difficulty) < 3: #Unfair dificulty definitely unfair
+        print(' '.join(game.wordProgress)) #clean way to show what has been guessed and hint at the wrod better
     
     print("\n")
     
@@ -79,5 +89,3 @@ while (game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGue
 print(game.guess)
 
 print(answer.word)
-
-#Work on display, of letters in word correctly guessed, of hangman. Aesthetics time.
