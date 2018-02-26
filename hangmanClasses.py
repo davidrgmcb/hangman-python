@@ -1,3 +1,5 @@
+from random import choice
+
 class Word(object): #Aspects of the word itself
     def __init__(self):
         self.word = "-1" #Makes the default run afoul of the "isalpha()" call, saves a line
@@ -8,7 +10,13 @@ class Word(object): #Aspects of the word itself
     def fixAnswer(self): #I don't like that this exists and there's probably a better fix but not one I can quickly see
         self.listOfCorrectLetters = list(self.word)
         self.length = len(self.word)
+        self.word = str.lower(self.word)
         return
+        
+    def randomizeAnswer(self):
+        while self.word.isalpha() == False or self.length < 2: #randomizes the word so long as it hasn't already been set
+            self.word = choice(possibleWords) #some of these word sources have apostrophes or nonletters in general, best to reroll if those show up
+        
 
 class GameState(object): #Aspects of the game state and how it interacts with the player
     def __init__(self):
@@ -17,3 +25,6 @@ class GameState(object): #Aspects of the game state and how it interacts with th
         self.lettersGuessed = set()
         self.wordProgress = []
         self.difficulty = "1"
+        
+    #def guessCaseFix(self)
+        
