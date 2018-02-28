@@ -22,6 +22,10 @@ class Word(object): #Aspects of the word itself
     def getCorrectLetterComparisonSet(self):
         for letter in self.word:
             self.correctLetters.add(letter)#makes a set of every letter in the word for easy comparison
+            
+    def endOfGameReveal(self, GameState):
+        if (GameState.strikes >=7):
+            print(self.word)
         
 
 class GameState(object): #Aspects of the game state and how it interacts with the player
@@ -79,3 +83,31 @@ class GameState(object): #Aspects of the game state and how it interacts with th
             pass
         else:
             self.strikes += 1 #need penalty to be an else, probably should find a better way to put it than pass up there
+            
+    def printHangman(self):
+        print(self.strikes) #Perhaps one day this morphs into an instruction to draw a hangman bit by bit and helps balloon the size of the program update: the future is now
+        if self.strikes == 1:
+            print("________\n|       |\n|       O")
+        elif self.strikes == 2:
+            print("________\n|       |\n|       O\n|       |")
+        elif self.strikes == 3:
+            print("________\n|       |\n|       O\n|     --|")
+        elif self.strikes == 4:
+            print("________\n|       |\n|       O\n|     --|--")
+        elif self.strikes == 5:
+            print("________\n|       |\n|       O\n|     --|--\n|      /")
+        elif self.strikes == 6:
+            print("________\n|       |\n|       O\n|     --|--\n|      / \\")
+        elif self.strikes >= 7:
+            print("________\n|       |\n|       O\n|     --|--\n|      / \\ \n\n He's dead Jim")
+            
+    def showProgress(self):
+        if int(self.difficulty) < 3: #Unfair dificulty definitely unfair
+             print(' '.join(self.wordProgress)) #clean way to show what has been guessed and hint at the word better
+             
+    def showGuesses(self):
+        print("\n")
+        print(sorted(list(self.lettersGuessed))) #frustrating to not know what you've guessed
+        
+    def reprintGuess(self):
+        print(self.guess)

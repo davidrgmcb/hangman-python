@@ -10,7 +10,7 @@ class testInputExistence (unittest.TestCase):
         
 class testRandomizer (unittest.TestCase):
     def testWordRandomizer(self):
-        self.assertNotEqual(hangman.answer.word, 'unpopulated')
+        self.assertNotEqual(hangman.answer.word, '-1')
     
 class testStandardization (unittest.TestCase):    
     def testGuessListAppend(self):

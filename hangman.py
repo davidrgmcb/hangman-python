@@ -25,32 +25,12 @@ while (game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGue
         
     game.checkGuess(answer) #checks if the guess was correct, adds to game.strikes if it isn't
         
-    print(game.strikes) #Perhaps one day this morphs into an instruction to draw a hangman bit by bit and helps balloon the size of the program update: the future is now
-    if game.strikes == 1:
-        print("________\n|       |\n|       O")
-    elif game.strikes == 2:
-        print("________\n|       |\n|       O\n|       |")
-    elif game.strikes == 3:
-        print("________\n|       |\n|       O\n|     --|")
-    elif game.strikes == 4:
-        print("________\n|       |\n|       O\n|     --|--")
-    elif game.strikes == 5:
-        print("________\n|       |\n|       O\n|     --|--\n|      /")
-    elif game.strikes == 6:
-        print("________\n|       |\n|       O\n|     --|--\n|      / \\")
-    elif game.strikes >= 7:
-        print("________\n|       |\n|       O\n|     --|--\n|      / \\ \n\n He's dead Jim")
-    #crude hangman drawing, probably better solutions exist but whatever
+    game.printHangman() #Prints a small hangman ascii based on how high game.strikes is
     
     #print(answer.correctLetters) #easier to debug with a view of what's correct
     
-    if int(game.difficulty) < 3: #Unfair dificulty definitely unfair
-        print(' '.join(game.wordProgress)) #clean way to show what has been guessed and hint at the word better
+    game.showProgress() #prints the list of underscores and corectly guessed letters
     
-    print("\n")
-    
-    print(list(game.lettersGuessed)) #frustrating to not know what you've guessed, should try to make this alphabetical later
+    game.showGuesses() #prints an alphabetical list of all the guessed letters
 
-print(game.guess)
-
-print(answer.word)
+answer.endOfGameReveal(game)
