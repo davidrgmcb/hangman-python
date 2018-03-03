@@ -6,18 +6,12 @@ answer = Word() #can't play hangman with no word to guess
 game = GameState() #Necessary to immediately generate the actual gamestate
 
 game.getDifficultySelection() #prompts for and sets a valid difficulty, responds with hostility if an invalid difficulty is chosen
-    
-answer.randomizeAnswer() #sets a random word to be the answer that ends the game on being fully guessed
-
-answer.fixAnswer() #rename this, currently sets the word.word attribute, enforces lowercase on the answer, sets the propere length and sets the ordered list of correct letters
 
 game.createWordProgressIndicator(answer) #makes the list of underscores used in display later, takes in answer to know what that length should be
 
-answer.getCorrectLetterComparisonSet() #gets a set of every letter contained in the word
-
 while (game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGuessed)): #game loop executes until enough wrong guesses or all correct letters guessed
 
-    game.guessEnforceLowerCase() #Ensures that the guess entered is lowercase regardless of whether it was entered as a capital letter or not
+    game.getGuess() #Ensures that the guess entered is lowercase regardless of whether it was entered as a capital letter or not
             
     game.updateCorrectLetterDisplay(answer) #updates the line of underscores matching the length of the correct guess, replacing underscores with correctly guessed letters
         

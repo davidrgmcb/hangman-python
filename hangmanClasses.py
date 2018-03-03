@@ -3,25 +3,12 @@ from sys import version_info
 
 class Word(object): #Aspects of the word itself
     def __init__(self):
-        self.word = "-1" #Makes the default run afoul of the "isalpha()" call, saves a line
-        self.length = len(self.word) #Just used for getting the length of the correct answer fill-in that lives in GameState. Could be just as fine outside this class I suppose but feels like a lateral move
-        self.correctLetters = set() #All the correct letters that need to be guessed for comparison against the set of letters guessed
-        self.listOfCorrectLetters = list(self.word) #The correct letters in a list, allows for proper display of what has been guessed correctly
         self.possibleWords = open("/usr/share/dict/words").read().split() #word randomization scheme, not exactly universally compatible at the moment but finding a freely redistributable wordlist has been harder than anticipated
-        
-    def fixAnswer(self): #I don't like that this exists and there's probably a better fix but not one I can quickly see
-        self.listOfCorrectLetters = list(self.word)
-        self.length = len(self.word)
-        self.word = str.lower(self.word)
-        return
-        
-    def randomizeAnswer(self):
-        while self.word.isalpha() == False or self.length < 2: #randomizes the word so long as it hasn't already been set
-            self.word = choice(self.possibleWords) #some of these word sources have apostrophes or nonletters in general, best to reroll if those show up
-            
-    def getCorrectLetterComparisonSet(self):
-        for letter in self.word:
-            self.correctLetters.add(letter)#makes a set of every letter in the word for easy comparison
+        self.word = str.lower(choice(self.possibleWords))
+        while self.word.isalpha() == False or len(self.word) < 2: #randomizes the word so long as it hasn't already been set
+            self.word = str.lower(choice(self.possibleWords)) #some of these word sources have apostrophes or nonletters in general, best to reroll if those show up
+        self.correctLetters = set(self.word) #All the correct letters that need to be guessed for comparison against the set of letters guessed
+        self.listOfCorrectLetters = list(self.word) #The correct letters in a list, allows for proper display of what has been guessed correctly
             
     def endOfGameReveal(self, GameState):
         if (GameState.strikes >=7):
@@ -54,17 +41,17 @@ class GameState(object): #Aspects of the game state and how it interacts with th
             print(self.difficulty)
             
     def createWordProgressIndicator(self, Word):
-        for letters in range(Word.length): #expand list into row of underscores showing how many letters remain to be guessed
+        for letters in range(len(Word.word)): #expand list into row of underscores showing how many letters remain to be guessed
             self.wordProgress.append("_")
         
-    def guessEnforceLowerCase(self):
+    def getGuess(self):
         if (version_info > (3, 0)): #A python version test, the changes to input bring the program to its knees otherwise
             self.guess = str.lower(input("Enter one letter\n")) #takes guess, ensures it isn't cased weird
         else:
             self.guess = str.lower(raw_input("Enter one letter\n")) #Ideally makes it somewhat python 2 compatible, merits careful testing
-
+#maybe split these
         while (len(self.guess) > 1) or (self.guess.isalpha() == False):
-             print ("Please, just one letter and no numbers\n")
+             print ("Please, just one letter and no numbers or symboles\n")
              if (version_info > (3, 0)): #same version compatibility attempt
                  self.guess = str.lower(input("Enter one letter\n"))
              else:
@@ -79,13 +66,13 @@ class GameState(object): #Aspects of the game state and how it interacts with th
         self.lettersGuessed.add(self.guess) #track what letters have been guessed, naturally
         
     def checkGuess(self, Word):
-        if set(self.guess).issubset(Word.correctLetters): #ugly and cludgy to convert a one letter string into a set just for this, hopefully change later
-            pass
-        else:
-            self.strikes += 1 #need penalty to be an else, probably should find a better way to put it than pass up there
+        if int(self.difficulty) == 1 and self.guess not in (Word.correctLetters): #Looks a little cleaner to me than arbitrary set conversion or calling __contains__ directly
+            self.strikes += 1
+        elif int(self.difficulty) > 1 and self.guess not in (Word.correctLetters):
+            self.strikes += 2 #Finally found a place to sneak in a distinction between difficulty 2 and 3, nearly entirely luck based now but hey this is a coding exercise not a game design exercise
             
     def printHangman(self):
-        print(self.strikes) #Perhaps one day this morphs into an instruction to draw a hangman bit by bit and helps balloon the size of the program update: the future is now
+        print(self.strikes) #A little superfluous now, but I don't think it muddies up the presentation and it can be nice to have an idea of how close you are to failure
         if self.strikes == 1:
             print("________\n|       |\n|       O")
         elif self.strikes == 2:
