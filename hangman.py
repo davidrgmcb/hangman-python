@@ -9,7 +9,13 @@ game.getDifficultySelection() #prompts for and sets a valid difficulty, responds
 
 game.createWordProgressIndicator(answer) #makes the list of underscores used in display later, takes in answer to know what that length should be
 
-while (game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGuessed)): #game loop executes until enough wrong guesses or all correct letters guessed
+while ((game.strikes < 7) and (not answer.correctLetters.issubset(game.lettersGuessed))) or (game.willReplay == True): #game loop executes until enough wrong guesses or all correct letters guessed
+    
+    if ((game.strikes >= 7) or (answer.correctLetters.issubset(game.lettersGuessed))):
+        answer.endOfGameReveal(game)
+        game.playAgain(answer)
+        if (game.willReplay == False):
+            break
 
     game.getGuess() #Ensures that the guess entered is lowercase regardless of whether it was entered as a capital letter or not
             

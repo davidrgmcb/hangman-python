@@ -11,8 +11,15 @@ class Word(object): #Aspects of the word itself
         self.listOfCorrectLetters = list(self.word) #The correct letters in a list, allows for proper display of what has been guessed correctly
             
     def endOfGameReveal(self, GameState):
-        if (GameState.strikes >=7):
+        if (GameState.strikes >=7): #In retrospect I'm not sure why this conditional check is here, consider removing.
             print(self.word)
+            
+    def newWord(self):
+        self.word = str.lower(choice(self.possibleWords))
+        while self.word.isalpha() == False or len(self.word) < 2: #randomizes the word so long as it hasn't already been set
+            self.word = str.lower(choice(self.possibleWords)) #some of these word sources have apostrophes or nonletters in general, best to reroll if those show up
+        self.correctLetters = set(self.word) #All the correct letters that need to be guessed for comparison against the set of letters guessed
+        self.listOfCorrectLetters = list(self.word) #The correct letters in a list, allows for proper display of what has been guessed correctly
         
 
 class GameState(object): #Aspects of the game state and how it interacts with the player
@@ -22,6 +29,8 @@ class GameState(object): #Aspects of the game state and how it interacts with th
         self.lettersGuessed = set()
         self.wordProgress = []
         self.difficulty = "1"
+        self.willReplay = True
+        self.playRepeat = "N"
         
     def getDifficultySelection(self):
         if (version_info > (3, 0)):
@@ -38,7 +47,7 @@ class GameState(object): #Aspects of the game state and how it interacts with th
     def difficultyInvalidMessage(self):
             print("If you want to be difficult, I'll be difficult")
             self.difficulty = "3"
-            print(self.difficulty)
+            print("Difficulty is now {} (Unfair)".format(self.difficulty))
             
     def createWordProgressIndicator(self, Word):
         for letters in range(len(Word.word)): #expand list into row of underscores showing how many letters remain to be guessed
@@ -51,7 +60,7 @@ class GameState(object): #Aspects of the game state and how it interacts with th
             self.guess = str.lower(raw_input("Enter one letter\n")) #Ideally makes it somewhat python 2 compatible, merits careful testing
 #maybe split these
         while (len(self.guess) > 1) or (self.guess.isalpha() == False):
-             print ("Please, just one letter and no numbers or symboles\n")
+             print ("Please, just one letter and no numbers or symbols\n")
              if (version_info > (3, 0)): #same version compatibility attempt
                  self.guess = str.lower(input("Enter one letter\n"))
              else:
@@ -98,3 +107,36 @@ class GameState(object): #Aspects of the game state and how it interacts with th
         
     def reprintGuess(self):
         print(self.guess)
+    
+    def playAgain(self, Word): #text prompting whether to reset the game state and play again, takes in Word so it can pass it to resetGame if that is called, inelegant but oh well.
+        if (version_info > (3, 0)):
+            self.playRepeat = input("Would you like to play again? Y for yes N for no\n")
+            self.playRepeat = self.playRepeat.upper() #Just standardize the case
+            print(self.playRepeat)
+            if (self.playRepeat == "Y"):
+                self.resetGame(Word)
+            else:
+                print("Okay, thanks for playing!\n")
+                self.willReplay = False
+                pass
+        else:
+            self.playRepeat = raw_input("Would you like to play again? Y for yes N for no\n")
+            self.playRepeat = self.playRepeat.upper()
+            print(self.playRepeat)
+            if (self.playRepeat == "Y"):
+                self.resetGame(Word)
+            else:
+                print("Okay, thanks for playing!\n")
+                self.willReplay = False
+                pass
+            
+    
+    def resetGame(self, Word): #should set everything back to scratch enough to play again
+        Word.newWord() #Essentially reinits but just reuses the already loaded dictionary
+        self.guess = "?"
+        self.strikes = 0
+        self.lettersGuessed.clear() #Not much different than just pointing it to an empty set, but theoretically a very slight memory save, not that it matters in this context.
+        del self.wordProgress[:] #Same
+        self.difficulty = "1" #Player might want to play on a different difficulty, this is probably unnecessary though
+        self.getDifficultySelection()
+        self.createWordProgressIndicator(Word)
